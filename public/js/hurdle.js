@@ -33,6 +33,13 @@ const cell42 = document.querySelector('#cell42');
 const cell43 = document.querySelector('#cell43');
 const cell44 = document.querySelector('#cell44');
 
+const row6 = document.querySelector('#row6');
+const cell50 = document.querySelector('#cell50');
+const cell51 = document.querySelector('#cell51');
+const cell52 = document.querySelector('#cell52');
+const cell53 = document.querySelector('#cell53');
+const cell54 = document.querySelector('#cell54');
+
 window.onload = function () {
     cell00.focus();
-}   
+}
