@@ -11,7 +11,7 @@ body {
     align-items: center;
     flex-direction: column;
     color: white;
-    background: #08090D;
+    background-color: #08090D;
     font-family: 'Roboto', sans-serif;
 }
 
@@ -48,15 +48,15 @@ hr {
 }
 
 .row input {
-    width: 50px;
-    line-height: 50px;
+    width: 60px;
+    line-height: 56px;
     margin-left: 0.2%;
-    border: 2px solid #343A40;
-    background: #08090D;
+    border: 2px solid rgb(51, 51, 53);
+    background-color: #08090D;
     color: white;
     cursor: default;
     outline: none;
-    font-size: 2em;
+    font-size: 2.5em;
     text-align: center;
     text-transform: uppercase;
     font-weight: 600;
@@ -66,4 +66,25 @@ hr {
 footer {
     margin-top: auto;
     padding-bottom: 1%;
+}
+
+.row .correct {
+    border: 2px rgb(73, 130, 69) solid;
+    background-color: rgb(73, 130, 69);
+    color: white;
+    transition: all 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+}
+
+.row .incorrect {
+    color: white;
+    border: 2px rgb(51, 51, 53) solid;
+    background-color: rgb(51, 51, 53);
+    transition: all 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+}
+
+.row .partial {
+    color: white;
+    border: 2px rgb(172, 149, 52) solid;
+    background-color: rgb(172, 149, 52);
+    transition: all 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
 }

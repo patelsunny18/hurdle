@@ -12,7 +12,7 @@ app.use(express.static(__dirname + '/public'))
 app.use(express.static(__dirname + '/public/css/'));
 
 app.get('/', (req, res) => {
-    res.render('hurdle');
+    res.sendFile(path.join(__dirname + '/public/views/hurdle.html'));
 });
 
 app.listen(8080, () => {
