@@ -52,8 +52,6 @@ isRow5Filled = false;
 
 hasWon = false;
 
-word = "sunny";
-
 window.addEventListener('keydown', function (event) {
     if (!isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled && !hasWon) {
         if (checkKey(event.code)) {
@@ -89,7 +87,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}0`].focus();
                 counter = 0;
             } else if (event.code === "Enter") {
-                checkAnswer(rowIndex);
+                checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}0`].focus();
                 counter += 1;
@@ -102,7 +100,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}0`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(rowIndex);
+                checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}1`].focus();
                 counter += 1;
@@ -115,7 +113,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}1`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(rowIndex);
+                checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}2`].focus();
                 counter += 1;
@@ -128,7 +126,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}2`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(rowIndex);
+                checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}3`].focus();
                 counter += 1;
@@ -141,7 +139,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}3`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(rowIndex);
+                checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}4`].focus();
                 counter += 1;
@@ -156,7 +154,7 @@ function fillRow(event, rowIndex) {
             } else {
                 if (event.code === "Enter") {
                     window[`isRow${rowIndex}Filled`] = true;
-                    checkAnswer(rowIndex);
+                    checkAnswer(event, rowIndex);
                     getNextRowReady(rowIndex, rowIndex + 1);
                     counter = 0;
                 }
@@ -166,7 +164,7 @@ function fillRow(event, rowIndex) {
     }
 }
 
-function checkAnswer(rowIndex) {
+async function checkAnswer(event, rowIndex) {
     numsOfCorrect = 0;
 
     if (!window[`isRow${rowIndex}Filled`]) {
@@ -178,60 +176,26 @@ function checkAnswer(rowIndex) {
         window[`cell${rowIndex}3Value`] = window[`cell${rowIndex}3`].value;
         window[`cell${rowIndex}4Value`] = window[`cell${rowIndex}4`].value;
 
-        const data = {
-            one: window[`cell${rowIndex}0Value`],
-            two: window[`cell${rowIndex}1Value`],
-            three: window[`cell${rowIndex}2Value`],
-            four: window[`cell${rowIndex}3Value`],
-            five: window[`cell${rowIndex}4Value`]
-        };
+        const word = `${window[`cell${rowIndex}0Value`]}${window[`cell${rowIndex}1Value`]}${window[`cell${rowIndex}2Value`]}${window[`cell${rowIndex}3Value`]}${window[`cell${rowIndex}4Value`]}`;
 
-        if (word[0] === window[`cell${rowIndex}0Value`]) {
-            window[`cell${rowIndex}0`].classList.add("correct");
-            numsOfCorrect++;
-        } else if (word.includes(window[`cell${rowIndex}0Value`])) {
-            window[`cell${rowIndex}0`].classList.add("partial");
-        } else {
-            window[`cell${rowIndex}0`].classList.add("incorrect");
-        }
+        try {
+            const response = await axios.post('/checkAnswer', { word });
+            const resData = response.data;
 
-        if (word[1] === window[`cell${rowIndex}1Value`]) {
-            window[`cell${rowIndex}1`].classList.add("correct");
-            numsOfCorrect++;
-        } else if (word.includes(window[`cell${rowIndex}1Value`])) {
-            window[`cell${rowIndex}1`].classList.add("partial");
-        } else {
-            window[`cell${rowIndex}1`].classList.add("incorrect");
-        }
-
-        if (word[2] === window[`cell${rowIndex}2Value`]) {
-            window[`cell${rowIndex}2`].classList.add("correct");
-            numsOfCorrect++;
-        } else if (word.includes(window[`cell${rowIndex}2Value`])) {
-            window[`cell${rowIndex}2`].classList.add("partial");
-        } else {
-            window[`cell${rowIndex}2`].classList.add("incorrect");
-        }
-
-        if (word[3] === window[`cell${rowIndex}3Value`]) {
-            window[`cell${rowIndex}3`].classList.add("correct");
-            numsOfCorrect++;
-        } else if (word.includes(window[`cell${rowIndex}3Value`])) {
-            window[`cell${rowIndex}3`].classList.add("partial");
-        } else {
-            window[`cell${rowIndex}3`].classList.add("incorrect");
-        }
-
-        if (word[4] === window[`cell${rowIndex}4Value`]) {
-            window[`cell${rowIndex}4`].classList.add("correct");
-            numsOfCorrect++;
-        } else if (word.includes(window[`cell${rowIndex}4Value`])) {
-            window[`cell${rowIndex}4`].classList.add("partial");
-        } else {
-            window[`cell${rowIndex}4`].classList.add("incorrect");
+            for (const [key, value] of Object.entries(resData)) {
+                if (value === 0) {
+                    window[`cell${rowIndex}${key[1]}`].classList.add("incorrect");
+                } else if (value === 1) {
+                    window[`cell${rowIndex}${key[1]}`].classList.add("partial");
+                } else if (value === 2) {
+                    numsOfCorrect++;
+                    window[`cell${rowIndex}${key[1]}`].classList.add("correct");
+                }
+            }
+        } catch (err) {
+            return "Not in word list";
         }
     }
-    console.log(numsOfCorrect);
     if (numsOfCorrect === 5) {
         setTimeout(endGame, 1100);
     }
