@@ -80,14 +80,14 @@ window.addEventListener('keydown', function (event) {
     }
 });
 
-function fillRow(event, rowIndex) {
+async function fillRow(event, rowIndex) {
     switch (counter) {
         case 0: {
             if (event.code === "Backspace") {
                 window[`cell${rowIndex}0`].focus();
                 counter = 0;
             } else if (event.code === "Enter") {
-                checkAnswer(event, rowIndex);
+                await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}0`].focus();
                 counter += 1;
@@ -100,7 +100,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}0`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(event, rowIndex);
+                await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}1`].focus();
                 counter += 1;
@@ -113,7 +113,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}1`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(event, rowIndex);
+                await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}2`].focus();
                 counter += 1;
@@ -126,7 +126,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}2`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(event, rowIndex);
+                await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}3`].focus();
                 counter += 1;
@@ -139,7 +139,7 @@ function fillRow(event, rowIndex) {
                 window[`cell${rowIndex}3`].focus();
                 counter -= 1;
             } else if (event.code === "Enter") {
-                checkAnswer(event, rowIndex);
+                await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}4`].focus();
                 counter += 1;
@@ -154,9 +154,17 @@ function fillRow(event, rowIndex) {
             } else {
                 if (event.code === "Enter") {
                     window[`isRow${rowIndex}Filled`] = true;
-                    checkAnswer(event, rowIndex);
-                    getNextRowReady(rowIndex, rowIndex + 1);
-                    counter = 0;
+                    let result = await checkAnswer(event, rowIndex);
+                    if (result === "error") {
+                        window[`isRow${rowIndex}Filled`] = false;
+                        counter = 5;
+                        window[`cell${rowIndex}4`].focus();
+                        alert("Not in word list!");
+                    } else if (result === "ok") {
+                        window[`isRow${rowIndex}Filled`] = true;
+                        getNextRowReady(rowIndex, rowIndex + 1);
+                        counter = 0;
+                    }
                 }
             }
             break;
@@ -192,12 +200,15 @@ async function checkAnswer(event, rowIndex) {
                     window[`cell${rowIndex}${key[1]}`].classList.add("correct");
                 }
             }
+
+            if (numsOfCorrect === 5) {
+                setTimeout(endGame, 1100);
+            } else {
+                return "ok";
+            }
         } catch (err) {
-            return "Not in word list";
+            return "error";
         }
-    }
-    if (numsOfCorrect === 5) {
-        setTimeout(endGame, 1100);
     }
 }
 
