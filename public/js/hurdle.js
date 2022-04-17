@@ -41,16 +41,16 @@ const cell53 = document.querySelector('#cell53');
 const cell54 = document.querySelector('#cell54');
 
 
-counter = 0;
+let counter = 0;
 
-isRow0Filled = false;
-isRow1Filled = false;
-isRow2Filled = false;
-isRow3Filled = false;
-isRow4Filled = false;
-isRow5Filled = false;
+let isRow0Filled = false;
+let isRow1Filled = false;
+let isRow2Filled = false;
+let isRow3Filled = false;
+let isRow4Filled = false;
+let isRow5Filled = false;
 
-hasWon = false;
+let hasWon = false;
 
 window.addEventListener('keydown', function (event) {
     if (!isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled && !hasWon) {
