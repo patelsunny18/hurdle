@@ -89,10 +89,6 @@ footer {
     transition: all 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
 }
 
-/* .row input:read-only {
-    border: 2px red solid;
-}
-
 .row input:focus {
-    border: 2px blue solid;
-} */
+    border: 2px rgb(76, 77, 78) solid;
+} 

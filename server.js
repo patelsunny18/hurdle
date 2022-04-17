@@ -23,8 +23,10 @@ app.get('/', (req, res) => {
 app.post('/checkAnswer', (req, res) => {
     const word = req.body;
     const resData = {};
+    console.log(words.check(word.word));
 
     if (!words.check(word.word)) {
+        console.log("inside");
         res.sendStatus(400);
     } else {
         if (todaysWord[0] === word.word[0]) {

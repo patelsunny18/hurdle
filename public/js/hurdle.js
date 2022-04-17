@@ -43,39 +43,31 @@ const cell54 = document.querySelector('#cell54');
 
 let counter = 0;
 
-let isRow0Filled = false;
-let isRow1Filled = false;
-let isRow2Filled = false;
-let isRow3Filled = false;
-let isRow4Filled = false;
-let isRow5Filled = false;
+window["isRow0Filled"] = false;
+window["isRow1Filled"] = false;
+window["isRow2Filled"] = false;
+window["isRow3Filled"] = false;
+window["isRow4Filled"] = false;
+window["isRow5Filled"] = false;
 
 let hasWon = false;
 
 window.addEventListener('keydown', function (event) {
-    if (!isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled && !hasWon) {
-        if (checkKey(event.code)) {
+    if (checkKey(event.code)) {
+        if (!isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
             fillRow(event, 0);
-        }
-    } else if (isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled && !hasWon) {
-        if (checkKey(event.code)) {
+        } else if (isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
             fillRow(event, 1);
-        }
-    } else if (isRow0Filled && isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled && !hasWon) {
-        if (checkKey(event.code)) {
+        } else if (isRow0Filled && isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
             fillRow(event, 2);
-        }
-    } else if (isRow0Filled && isRow1Filled && isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled && !hasWon) {
-        if (checkKey(event.code)) {
+        } else if (isRow0Filled && isRow1Filled && isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
             fillRow(event, 3);
-        }
-    } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && !isRow4Filled && !isRow5Filled && !hasWon) {
-        if (checkKey(event.code)) {
+        } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && !isRow4Filled && !isRow5Filled) {
             fillRow(event, 4);
-        }
-    } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && isRow4Filled && !isRow5Filled && !hasWon) {
-        if (checkKey(event.code)) {
+        } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && isRow4Filled && !isRow5Filled) {
             fillRow(event, 5);
+        } else {
+            alert("Better luck next time!");
         }
     }
 });
@@ -155,6 +147,7 @@ async function fillRow(event, rowIndex) {
                 if (event.code === "Enter") {
                     window[`isRow${rowIndex}Filled`] = true;
                     let result = await checkAnswer(event, rowIndex);
+
                     if (result === "error") {
                         window[`isRow${rowIndex}Filled`] = false;
                         counter = 5;
@@ -164,6 +157,8 @@ async function fillRow(event, rowIndex) {
                         window[`isRow${rowIndex}Filled`] = true;
                         getNextRowReady(rowIndex, rowIndex + 1);
                         counter = 0;
+                    } else if (result === "end") {
+                        setTimeout(endGame, 1500, rowIndex);
                     }
                 }
             }
@@ -173,8 +168,6 @@ async function fillRow(event, rowIndex) {
 }
 
 async function checkAnswer(event, rowIndex) {
-    numsOfCorrect = 0;
-
     if (!window[`isRow${rowIndex}Filled`]) {
         alert("Not enough letters!");
     } else {
@@ -184,6 +177,7 @@ async function checkAnswer(event, rowIndex) {
         window[`cell${rowIndex}3Value`] = window[`cell${rowIndex}3`].value;
         window[`cell${rowIndex}4Value`] = window[`cell${rowIndex}4`].value;
 
+        numsOfCorrect = 0;
         const word = `${window[`cell${rowIndex}0Value`]}${window[`cell${rowIndex}1Value`]}${window[`cell${rowIndex}2Value`]}${window[`cell${rowIndex}3Value`]}${window[`cell${rowIndex}4Value`]}`;
 
         try {
@@ -202,7 +196,7 @@ async function checkAnswer(event, rowIndex) {
             }
 
             if (numsOfCorrect === 5) {
-                setTimeout(endGame, 1100);
+                return "done";
             } else {
                 return "ok";
             }
@@ -213,12 +207,15 @@ async function checkAnswer(event, rowIndex) {
 }
 
 function endGame(currRowIndex) {
-    for (i = currRowIndex; i < 6; i++) {
-        window[`cell${currRowIndex}0`].readOnly = true;
-        window[`cell${currRowIndex}1`].readOnly = true;
-        window[`cell${currRowIndex}2`].readOnly = true;
-        window[`cell${currRowIndex}3`].readOnly = true;
-        window[`cell${currRowIndex}4`].readOnly = true;
+    console.log(currRowIndex);
+    for (let i = currRowIndex; i < 6; i++) {
+        console.log(i);
+        window[`cell${i}0`].readOnly = true;
+        window[`cell${i}1`].readOnly = true;
+        window[`cell${i}2`].readOnly = true;
+        window[`cell${i}3`].readOnly = true;
+        window[`cell${i}4`].readOnly = true;
+        window[`cell${i}4`].blur();
     }
     hasWon = true;
     alert("Congratulations! You have cracked today's word. Come back tomorrow for the next.");
