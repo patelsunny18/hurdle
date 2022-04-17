@@ -183,7 +183,7 @@ async function checkAnswer(event, rowIndex) {
         try {
             const response = await axios.post('/checkAnswer', { word });
             const resData = response.data;
-
+            
             for (const [key, value] of Object.entries(resData)) {
                 if (value === 0) {
                     window[`cell${rowIndex}${key[1]}`].classList.add("incorrect");
@@ -196,7 +196,7 @@ async function checkAnswer(event, rowIndex) {
             }
 
             if (numsOfCorrect === 5) {
-                return "done";
+                return "end";
             } else {
                 return "ok";
             }
@@ -207,9 +207,7 @@ async function checkAnswer(event, rowIndex) {
 }
 
 function endGame(currRowIndex) {
-    console.log(currRowIndex);
     for (let i = currRowIndex; i < 6; i++) {
-        console.log(i);
         window[`cell${i}0`].readOnly = true;
         window[`cell${i}1`].readOnly = true;
         window[`cell${i}2`].readOnly = true;
