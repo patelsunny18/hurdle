@@ -61,7 +61,7 @@ hr {
 }
 
 .fadeInOut {
-    animation: fadeInOut 2s linear forwards;
+    animation: fadeInOut 1.5s ease-in-out forwards;
 }
 
 @keyframes fadeInOut {
