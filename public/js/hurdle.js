@@ -1,4 +1,5 @@
 const message = document.querySelector('#message');
+const error_text = document.querySelector('#error_text');
 
 const row0 = document.querySelector('#row1');
 const cell00 = document.querySelector('#cell00');
@@ -53,6 +54,7 @@ window["isRow4Filled"] = false;
 window["isRow5Filled"] = false;
 
 let hasWon = false;
+let numOfTries = 0;
 
 window.addEventListener('keydown', function (event) {
     if (checkKey(event.code)) {
@@ -68,8 +70,6 @@ window.addEventListener('keydown', function (event) {
             fillRow(event, 4);
         } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && isRow4Filled && !isRow5Filled) {
             fillRow(event, 5);
-        } else {
-            alert("Better luck next time!");
         }
     }
 });
@@ -152,9 +152,11 @@ async function fillRow(event, rowIndex) {
                     let result = await checkAnswer(event, rowIndex);
 
                     if (result === "error") {
+                        error_text.innerHTML = "Not in word list";
                         message.classList.add("fadeInOut");
                         setTimeout(() => {
                             message.classList.remove("fadeInOut");
+                            error_text.innerHTML = "";
                         }, 2050);
 
                         window[`row${rowIndex}`].classList.add("shake");
@@ -166,11 +168,15 @@ async function fillRow(event, rowIndex) {
                         counter = 5;
                         window[`cell${rowIndex}4`].focus();
                     } else if (result === "ok") {
-                        window[`isRow${rowIndex}Filled`] = true;
-                        getNextRowReady(rowIndex, rowIndex + 1);
-                        counter = 0;
+                        if (numOfTries === 6) {
+                            setTimeout(lose, 1200);
+                        } else {
+                            window[`isRow${rowIndex}Filled`] = true;
+                            getNextRowReady(rowIndex, rowIndex + 1);
+                            counter = 0;
+                        }
                     } else if (result === "end") {
-                        setTimeout(endGame, 1500, rowIndex);
+                        setTimeout(win, 1200, rowIndex);
                     }
                 }
             }
@@ -181,7 +187,12 @@ async function fillRow(event, rowIndex) {
 
 async function checkAnswer(event, rowIndex) {
     if (!window[`isRow${rowIndex}Filled`]) {
-        alert("Not enough letters!");
+        error_text.innerHTML = "Not enough letter";
+        message.classList.add("fadeInOut");
+        setTimeout(() => {
+            message.classList.remove("fadeInOut");
+            error_text.innerHTML = "";
+        }, 2050);
     } else {
         window[`cell${rowIndex}0Value`] = window[`cell${rowIndex}0`].value;
         window[`cell${rowIndex}1Value`] = window[`cell${rowIndex}1`].value;
@@ -195,7 +206,7 @@ async function checkAnswer(event, rowIndex) {
         try {
             const response = await axios.post('/checkAnswer', { word });
             const resData = response.data;
-            
+
             for (const [key, value] of Object.entries(resData)) {
                 if (value === 0) {
                     window[`cell${rowIndex}${key[1]}`].classList.add("incorrect");
@@ -210,15 +221,17 @@ async function checkAnswer(event, rowIndex) {
             if (numsOfCorrect === 5) {
                 return "end";
             } else {
+                numOfTries++;
                 return "ok";
             }
         } catch (err) {
+            console.clear();
             return "error";
         }
     }
 }
 
-function endGame(currRowIndex) {
+function win(currRowIndex) {
     for (let i = currRowIndex; i < 6; i++) {
         window[`cell${i}0`].readOnly = true;
         window[`cell${i}1`].readOnly = true;
@@ -229,6 +242,10 @@ function endGame(currRowIndex) {
     }
     hasWon = true;
     alert("Congratulations! You have cracked today's word. Come back tomorrow for the next.");
+}
+
+function lose() {
+    alert("You lost!");
 }
 
 function getNextRowReady(currRowIndex, nextRowIndex) {

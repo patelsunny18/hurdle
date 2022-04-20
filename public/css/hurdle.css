@@ -44,7 +44,8 @@ hr {
 }
 
 #message {
-    width: 5%;
+    width: 150px;
+    height: 41px;
     margin: 0 auto;
     text-align: center;
     padding-bottom: 2%;
@@ -68,6 +69,10 @@ hr {
     50% {
         opacity: 1;
     }
+}
+
+#grid {
+    padding-top: 20px;
 }
 
 .row {
