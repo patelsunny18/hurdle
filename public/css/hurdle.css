@@ -43,7 +43,7 @@ hr {
     text-align: center;
 }
 
-#message {
+#message-container {
     width: 150px;
     height: 41px;
     margin: 0 auto;
@@ -52,7 +52,7 @@ hr {
     opacity: 0;
 }
 
-#message p {
+#message-container p {
     background-color: white;
     color: black;
     border: 1px white solid;
@@ -217,7 +217,7 @@ footer {
 
 #modal-content {
     margin: 20% auto;
-    width: 30%;
+    width: 40%;
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
     animation: modalopen 1s;
 }
@@ -247,6 +247,29 @@ footer {
     text-align: center;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+#timer-box {
+    width: 50%;
+}
+
+#timer-box h3 {
+    font-weight: 600;
+}
+
+#timer {
+    font-size: xx-large;
+    padding-top: 5px;
+    font-weight: 500;
+}
+
+#vr {
+    border-left: 1px white solid;
+    height: 100px;
+    padding: 0 10px 0 10px;
 }
 
 #share-button {
@@ -254,6 +277,7 @@ footer {
     border: 1px rgb(73, 130, 69) solid;
     background-color: rgb(73, 130, 69);
     padding: 10px;
+    width: 50%;
     border-radius: 5px;
     cursor: pointer;
 }

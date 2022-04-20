@@ -7,6 +7,8 @@ const checkWord = require('check-word');
 const fs = require('fs');
 const wordListPath = require('word-list');
 const wordArray = fs.readFileSync(wordListPath, 'utf8').split('\n');
+const schedule = require('node-schedule');
+const { resolve } = require('path');
 
 const app = express();
 
@@ -17,13 +19,17 @@ app.use(express.static(__dirname + '/public'))
 app.use(express.static(__dirname + '/public/css/'));
 
 const dict = checkWord('en');
-const todaysWord = generateWord();
-console.log(todaysWord);
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname + '/public/views/hurdle.html'));
+let todaysWord = "first";
+
+let job = schedule.scheduleJob('0 0 * * *', () => {
+    todaysWord = generateWord();
 });
 
+app.get('/', (req, res) => {
+    console.log(todaysWord);
+    res.sendFile(path.join(__dirname + '/public/views/hurdle.html'));
+});
 app.post('/checkAnswer', (req, res) => {
     const inputWord = req.body;
     const resData = {};

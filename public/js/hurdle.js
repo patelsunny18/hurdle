@@ -1,5 +1,5 @@
+const messageContainer = document.querySelector('#message-container');
 const message = document.querySelector('#message');
-const error_text = document.querySelector('#error_text');
 
 const row0 = document.querySelector('#row1');
 const cell00 = document.querySelector('#cell00');
@@ -47,6 +47,8 @@ const modal = document.querySelector('#modal');
 const closeBtn = document.querySelector('#close');
 const shareButton = document.querySelector('#share-button');
 const modalBodyText = document.querySelector('#modal-body-text');
+const timer = document.querySelector('#timer');
+window.onload = timeToNextHurdle();
 
 shareButton.addEventListener('click', shareResults);
 closeBtn.addEventListener('click', closeModal);
@@ -161,11 +163,11 @@ async function fillRow(event, rowIndex) {
                     let result = await checkAnswer(event, rowIndex);
 
                     if (result === "error") {
-                        error_text.innerHTML = "Not in word list";
-                        message.classList.add("fadeInOut");
+                        message.innerHTML = "Not in word list";
+                        messageContainer.classList.add("fadeInOut");
                         setTimeout(() => {
-                            message.classList.remove("fadeInOut");
-                            error_text.innerHTML = "";
+                            messageContainer.classList.remove("fadeInOut");
+                            message.innerHTML = "";
                         }, 2050);
 
                         window[`row${rowIndex}`].classList.add("shake");
@@ -201,11 +203,11 @@ async function fillRow(event, rowIndex) {
 
 async function checkAnswer(event, rowIndex) {
     if (!window[`isRow${rowIndex}Filled`]) {
-        error_text.innerHTML = "Not enough letter";
-        message.classList.add("fadeInOut");
+        message.innerHTML = "Not enough letter";
+        messageContainer.classList.add("fadeInOut");
         setTimeout(() => {
-            message.classList.remove("fadeInOut");
-            error_text.innerHTML = "";
+            messageContainer.classList.remove("fadeInOut");
+            message.innerHTML = "";
         }, 2050);
     } else {
         window[`cell${rowIndex}0Value`] = window[`cell${rowIndex}0`].value;
@@ -293,18 +295,16 @@ function createResults(rowIndex) {
         }
     }
     results += "\n";
-
-    console.log(results);
 }
 
 function shareResults() {
     navigator.clipboard.writeText(results)
         .then(() => {
-            error_text.innerHTML = "Copied to clipboard";
-            message.classList.add("fadeInOut");
+            message.innerHTML = "Copied";
+            messageContainer.classList.add("fadeInOut");
             setTimeout(() => {
-                message.classList.remove("fadeInOut");
-                error_text.innerHTML = "";
+                messageContainer.classList.remove("fadeInOut");
+                message.innerHTML = "";
             }, 2050);
         });
 }
@@ -321,4 +321,28 @@ function outsideClick(e) {
     if (e.target === modal) {
         modal.style.display = 'none';
     }
+}
+
+function timeToNextHurdle() {
+    setInterval(function () {
+        let today = new Date();
+        let tomorrow = new Date();
+        tomorrow.setHours(24, 0, 0, 0);
+
+        let remainingTimeInSeconds = (tomorrow.getTime() - today.getTime()) / 1000;
+
+        let hours = Math.floor(remainingTimeInSeconds / 3600);
+        remainingTimeInSeconds = remainingTimeInSeconds - (hours * 3600);
+
+        let mins = Math.floor(remainingTimeInSeconds / 60);
+        remainingTimeInSeconds = remainingTimeInSeconds - (mins * 60);
+
+        let secs = Math.floor(remainingTimeInSeconds);
+
+        let time = ((hours < 10) ? "0" + hours : hours);
+        time += ":" + ((mins < 10) ? "0" + mins : mins);
+        time += ":" + ((secs < 10) ? "0" + secs : secs);
+
+        timer.innerHTML = time;
+    }, 1000);
 }
