@@ -150,6 +150,11 @@ async function fillRow(event, rowIndex) {
                     let result = await checkAnswer(event, rowIndex);
 
                     if (result === "error") {
+                        window[`row${rowIndex}`].classList.add("shake");
+                        setTimeout(() => {
+                            window[`row${rowIndex}`].classList.remove("shake");
+                        }, 500);
+
                         window[`isRow${rowIndex}Filled`] = false;
                         counter = 5;
                         window[`cell${rowIndex}4`].focus();
