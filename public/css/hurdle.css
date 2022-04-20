@@ -11,7 +11,7 @@ body {
     align-items: center;
     flex-direction: column;
     color: white;
-    background-color: #08090D;
+    background-color: rgb(9, 9, 10);
     font-family: 'Roboto', sans-serif;
 }
 
@@ -84,7 +84,7 @@ hr {
     line-height: 56px;
     margin-left: 0.2%;
     border: 2px solid rgb(51, 51, 53);
-    background-color: #08090D;
+    background-color: rgb(9, 9, 10);
     color: white;
     cursor: default;
     outline: none;
@@ -156,6 +156,27 @@ footer {
     }
 }
 
+.row .partial {
+    color: white;
+    border: 2px rgb(172, 149, 52) solid;
+    background-color: rgb(172, 149, 52);
+    animation: flip-partial 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+}
+
+@keyframes flip-partial {
+    0% {
+        border: 2px solid rgb(51, 51, 53);
+        background-color: #08090D;
+        transform: rotateX(0);
+    }
+
+    100% {
+        border: 2px rgb(172, 149, 52) solid;
+        background-color: rgb(172, 149, 52);
+        transform: rotateX(-360deg);
+    }
+}
+
 .shake {
     animation: shake 0.3s;
 }
@@ -182,23 +203,85 @@ footer {
     }
 }
 
-.row .partial {
-    color: white;
-    border: 2px rgb(172, 149, 52) solid;
-    background-color: rgb(172, 149, 52);
-    animation: flip-partial 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+#modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5)
 }
 
-@keyframes flip-partial {
-    0% {
-        border: 2px solid rgb(51, 51, 53);
-        background-color: #08090D;
-        transform: rotateX(0);
+#modal-content {
+    margin: 20% auto;
+    width: 30%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.17);
+    animation: modalopen 1s;
+}
+
+#modal-header h2,
+#modal-footer h3 {
+    margin: 0;
+}
+
+#modal-header {
+    background: rgb(19, 19, 20);
+    padding: 15px;
+    color: #fff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+#modal-body {
+    padding: 10px 20px;
+    background: rgb(19, 19, 20);
+}
+
+#modal-footer {
+    background: rgb(19, 19, 20);
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+#share-button {
+    color: white;
+    border: 1px rgb(73, 130, 69) solid;
+    background-color: rgb(73, 130, 69);
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#share-button:hover {
+    border: 1px rgb(73, 130, 69) solid;
+    background-color: rgb(68, 119, 64);
+}
+
+#close {
+    color: #ccc;
+    float: right;
+    font-size: 30px;
+    color: #fff;
+}
+
+#close:hover,
+#close:focus {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@keyframes modalopen {
+    from {
+        opacity: 0;
     }
 
-    100% {
-        border: 2px rgb(172, 149, 52) solid;
-        background-color: rgb(172, 149, 52);
-        transform: rotateX(-360deg);
+    to {
+        opacity: 1;
     }
 }

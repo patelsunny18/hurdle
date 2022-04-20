@@ -43,6 +43,14 @@ const cell52 = document.querySelector('#cell52');
 const cell53 = document.querySelector('#cell53');
 const cell54 = document.querySelector('#cell54');
 
+const modal = document.querySelector('#modal');
+const closeBtn = document.querySelector('#close');
+const shareButton = document.querySelector('#share-button');
+const modalBodyText = document.querySelector('#modal-body-text');
+
+shareButton.addEventListener('click', shareResults);
+closeBtn.addEventListener('click', closeModal);
+window.addEventListener('click', outsideClick);
 
 let counter = 0;
 
@@ -55,6 +63,7 @@ window["isRow5Filled"] = false;
 
 let hasWon = false;
 let numOfTries = 0;
+let results = 'Hurdle! by Sunny\n\n';
 
 window.addEventListener('keydown', function (event) {
     if (checkKey(event.code)) {
@@ -169,13 +178,18 @@ async function fillRow(event, rowIndex) {
                         window[`cell${rowIndex}4`].focus();
                     } else if (result === "ok") {
                         if (numOfTries === 6) {
+                            createResults(rowIndex);
+                            results = results.slice(0, 16) + `${numOfTries}/6\n` + results.slice(16);
                             setTimeout(lose, 1200);
                         } else {
                             window[`isRow${rowIndex}Filled`] = true;
+                            createResults(rowIndex);
                             getNextRowReady(rowIndex, rowIndex + 1);
                             counter = 0;
                         }
                     } else if (result === "end") {
+                        createResults(rowIndex);
+                        results = results.slice(0, 17) + `${numOfTries}/6` + results.slice(16);
                         setTimeout(win, 1200, rowIndex);
                     }
                 }
@@ -219,6 +233,7 @@ async function checkAnswer(event, rowIndex) {
             }
 
             if (numsOfCorrect === 5) {
+                numOfTries++;
                 return "end";
             } else {
                 numOfTries++;
@@ -241,11 +256,13 @@ function win(currRowIndex) {
         window[`cell${i}4`].blur();
     }
     hasWon = true;
-    alert("Congratulations! You have cracked today's word. Come back tomorrow for the next.");
+    modalBodyText.innerHTML = "Congratulations! You have cracked today's word. Come back tomorrow for the next.";
+    openModal();
 }
 
 function lose() {
-    alert("You lost!");
+    modalBodyText.innerHTML = "Uh-oh! Come back tomorrow to try again.";
+    openModal();
 }
 
 function getNextRowReady(currRowIndex, nextRowIndex) {
@@ -263,4 +280,45 @@ function getNextRowReady(currRowIndex, nextRowIndex) {
 
 function checkKey(key) {
     return key !== "Space" && ((key.substring(0, 3) === "Key") || key === "Backspace" || key === "Enter");
+}
+
+function createResults(rowIndex) {
+    for (let i = 0; i < 5; i++) {
+        if (window[`cell${rowIndex}${i}`].classList.contains("correct")) {
+            results += "🟩 ";
+        } else if (window[`cell${rowIndex}${i}`].classList.contains("partial")) {
+            results += "🟨 ";
+        } else if (window[`cell${rowIndex}${i}`].classList.contains("incorrect")) {
+            results += "⬛ ";
+        }
+    }
+    results += "\n";
+
+    console.log(results);
+}
+
+function shareResults() {
+    navigator.clipboard.writeText(results)
+        .then(() => {
+            error_text.innerHTML = "Copied to clipboard";
+            message.classList.add("fadeInOut");
+            setTimeout(() => {
+                message.classList.remove("fadeInOut");
+                error_text.innerHTML = "";
+            }, 2050);
+        });
+}
+
+function openModal() {
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+function outsideClick(e) {
+    if (e.target === modal) {
+        modal.style.display = 'none';
+    }
 }
