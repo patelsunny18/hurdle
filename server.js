@@ -18,35 +18,36 @@ app.use(express.static(__dirname + '/public/css/'));
 
 const dict = checkWord('en');
 const todaysWord = generateWord();
+console.log(todaysWord);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/views/hurdle.html'));
 });
 
 app.post('/checkAnswer', (req, res) => {
-    const word = req.body;
+    const inputWord = req.body;
     const resData = {};
 
     const copyTodaysWord = `${todaysWord}`;
     let copyTodaysWordCount = getCount(copyTodaysWord);
 
-    if (!dict.check(word.word)) {
+    if (!dict.check(inputWord.word)) {
         res.sendStatus(400);
     } else {
         for (let i = 0; i < 5; i++) {
-            if (todaysWord[i] === word.word[i]) {
-                if (copyTodaysWordCount[word.word[i]] > 0) {
-                    copyTodaysWordCount[word.word[i]] -= 1;
+            if (todaysWord[i] === inputWord.word[i]) {
+                if (copyTodaysWordCount[inputWord.word[i]] > 0) {
+                    copyTodaysWordCount[inputWord.word[i]] -= 1;
                     resData[`l${i}`] = 2;
                 }
-            } else if (todaysWord.includes(word.word[i])) {
-                if (copyTodaysWordCount[word.word[i]] > 0) {
-                    copyTodaysWordCount[word.word[i]] -= 1;
+            } else if (todaysWord.includes(inputWord.word[i])) {
+                if (copyTodaysWordCount[inputWord.word[i]] > 0) {
+                    copyTodaysWordCount[inputWord.word[i]] -= 1;
                     resData[`l${i}`] = 1;
                 } else {
                     resData[`l${i}`] = 0;
                 }
-            } else if (todaysWord[i] !== word.word[i]) {
+            } else if (todaysWord[i] !== inputWord.word[i]) {
                 resData[`l${i}`] = 0;
             }
         }

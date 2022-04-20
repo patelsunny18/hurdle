@@ -68,23 +68,79 @@ footer {
     padding-bottom: 1%;
 }
 
+.row input:focus {
+    animation: scale-up 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+}
+
+@keyframes scale-up {
+    0% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
 .row .correct {
     border: 2px rgb(73, 130, 69) solid;
     background-color: rgb(73, 130, 69);
     color: white;
-    transition: all 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    animation: flip-correct 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
 }
 
 .row .incorrect {
     color: white;
     border: 2px rgb(51, 51, 53) solid;
     background-color: rgb(51, 51, 53);
-    transition: all 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    animation: flip-incorrect 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
 }
 
 .row .partial {
     color: white;
     border: 2px rgb(172, 149, 52) solid;
     background-color: rgb(172, 149, 52);
-    transition: all 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+    animation: flip-partial 1s cubic-bezier(0.455, 0.030, 0.515, 0.955);
+}
+
+@keyframes flip-correct {
+    0% {
+        border: 2px solid rgb(51, 51, 53);
+        background-color: #08090D;
+        transform: rotateX(0);
+    }
+
+    100% {
+        border: 2px rgb(73, 130, 69) solid;
+        background-color: rgb(73, 130, 69);
+        transform: rotateX(-360deg);
+    }
+}
+
+@keyframes flip-partial {
+    0% {
+        border: 2px solid rgb(51, 51, 53);
+        background-color: #08090D;
+        transform: rotateX(0);
+    }
+
+    100% {
+        border: 2px rgb(172, 149, 52) solid;
+        background-color: rgb(172, 149, 52);
+        transform: rotateX(-360deg);
+    }
+}
+
+@keyframes flip-incorrect {
+    0% {
+        border: 2px solid rgb(51, 51, 53);
+        background-color: #08090D;
+        transform: rotateX(0);
+    }
+
+    100% {
+        border: 2px rgb(51, 51, 53) solid;
+        background-color: rgb(51, 51, 53);
+        transform: rotateX(-360deg);
+    }
 }

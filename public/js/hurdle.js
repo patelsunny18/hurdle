@@ -146,6 +146,7 @@ async function fillRow(event, rowIndex) {
             } else {
                 if (event.code === "Enter") {
                     window[`isRow${rowIndex}Filled`] = true;
+                    window[`cell${rowIndex}4`].blur();
                     let result = await checkAnswer(event, rowIndex);
 
                     if (result === "error") {
@@ -233,5 +234,5 @@ function getNextRowReady(currRowIndex, nextRowIndex) {
 }
 
 function checkKey(key) {
-    return (key.substring(0, 3) === "Key") || key === "Backspace" || key === "Enter";
+    return key !== "Space" && ((key.substring(0, 3) === "Key") || key === "Backspace" || key === "Enter");
 }
