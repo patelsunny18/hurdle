@@ -38,9 +38,36 @@ hr {
 }
 
 #content {
-    padding-top: 5%;
+    padding-top: 3%;
     width: 100%;
     text-align: center;
+}
+
+#message {
+    width: 5%;
+    margin: 0 auto;
+    text-align: center;
+    padding-bottom: 2%;
+    opacity: 0;
+}
+
+#message p {
+    background-color: white;
+    color: black;
+    border: 1px white solid;
+    border-radius: 5px;
+    padding: 10px;
+    font-weight: 700;
+}
+
+.fadeInOut {
+    animation: fadeInOut 2s linear forwards;
+}
+
+@keyframes fadeInOut {
+    50% {
+        opacity: 1;
+    }
 }
 
 .row {

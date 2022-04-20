@@ -1,3 +1,5 @@
+const message = document.querySelector('#message');
+
 const row0 = document.querySelector('#row1');
 const cell00 = document.querySelector('#cell00');
 const cell01 = document.querySelector('#cell01');
@@ -150,6 +152,11 @@ async function fillRow(event, rowIndex) {
                     let result = await checkAnswer(event, rowIndex);
 
                     if (result === "error") {
+                        message.classList.add("fadeInOut");
+                        setTimeout(() => {
+                            message.classList.remove("fadeInOut");
+                        }, 2050);
+
                         window[`row${rowIndex}`].classList.add("shake");
                         setTimeout(() => {
                             window[`row${rowIndex}`].classList.remove("shake");
@@ -158,7 +165,6 @@ async function fillRow(event, rowIndex) {
                         window[`isRow${rowIndex}Filled`] = false;
                         counter = 5;
                         window[`cell${rowIndex}4`].focus();
-                        alert("Not in word list!");
                     } else if (result === "ok") {
                         window[`isRow${rowIndex}Filled`] = true;
                         getNextRowReady(rowIndex, rowIndex + 1);
