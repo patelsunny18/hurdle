@@ -10,6 +10,7 @@ const wordArray = fs.readFileSync(wordListPath, 'utf8').split('\n');
 const schedule = require('node-schedule');
 const { resolve } = require('path');
 
+const PORT = process.env.PORT || 8080;
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -27,9 +28,9 @@ let job = schedule.scheduleJob('0 0 * * *', () => {
 });
 
 app.get('/', (req, res) => {
-    // console.log(todaysWord);
     res.sendFile(path.join(__dirname + '/public/views/hurdle.html'));
 });
+
 app.post('/checkAnswer', (req, res) => {
     const inputWord = req.body;
     const resData = {};
@@ -81,6 +82,6 @@ function generateWord() {
     return fiveLetterArray[Math.floor(Math.random() * fiveLetterArray.length)];
 }
 
-app.listen(8080, () => {
+app.listen(PORT, () => {
     console.log("Server up and running...");
 });

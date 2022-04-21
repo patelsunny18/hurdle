@@ -45,6 +45,7 @@ const cell54 = document.querySelector('#cell54');
 
 const keyboardButtons = document.querySelectorAll('.keyboard-row button');
 
+// eventListener for clicks on the virtual keyboard
 document.addEventListener("DOMContentLoaded", function () {
     for (let i = 0; i < keyboardButtons.length; i++) {
         keyboardButtons[i].onclick = ({ target }) => {
@@ -52,38 +53,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (key === "Enter") {
                 let event = new KeyboardEvent("keydown", {
-                    bubbles: true,
-                    cancelBubble: false,
-                    cancelable: true,
                     code: "Enter",
-                    composed: true,
-                    isComposing: false,
-                    isTrusted: true,
-                    repeat: false
                 });
                 window.dispatchEvent(event);
             } else if (key === "Backspace") {
                 let event = new KeyboardEvent("keydown", {
-                    bubbles: true,
-                    cancelBubble: false,
-                    cancelable: true,
                     code: "Backspace",
-                    composed: true,
-                    isComposing: false,
-                    isTrusted: true,
-                    repeat: false
                 });
                 window.dispatchEvent(event);
             } else {
                 let event = new KeyboardEvent("keydown", {
-                    bubbles: true,
-                    cancelBubble: false,
-                    cancelable: true,
                     code: `Key${key}`,
-                    composed: true,
-                    isComposing: false,
-                    isTrusted: true,
-                    repeat: false
                 });
                 window.dispatchEvent(event);
             }
@@ -115,6 +95,7 @@ let hasGameEnded = false;
 let numOfTries = 0;
 let results = 'Hurdle! by Sunny\n\n';
 
+// eventListener for keyboard keydowns
 window.addEventListener('keydown', function (event) {
     if (hasGameEnded === false) {
         if (checkKey(event.code)) {
@@ -137,6 +118,7 @@ window.addEventListener('keydown', function (event) {
     }
 });
 
+// function to fill each row
 async function fillRow(event, rowIndex) {
     switch (counter) {
         case 0: {
@@ -244,7 +226,7 @@ async function fillRow(event, rowIndex) {
                     } else if (result === "ok") {
                         if (numOfTries === 6) {
                             createResults(rowIndex);
-                            results = results.slice(0, 16) + `${numOfTries}/6\n` + results.slice(16);
+                            results = results.slice(0, 16) + `${formateDate(new Date())} - ${numOfTries}/6\n` + results.slice(16);
                             setTimeout(lose, 1200, rowIndex);
                         } else {
                             window[`isRow${rowIndex}Filled`] = true;
@@ -254,7 +236,7 @@ async function fillRow(event, rowIndex) {
                         }
                     } else if (result === "end") {
                         createResults(rowIndex);
-                        results = results.slice(0, 17) + `${numOfTries}/6` + results.slice(16);
+                        results = results.slice(0, 17) + `${formateDate(new Date())} - ${numOfTries}/6\n` + results.slice(16);
                         setTimeout(win, 1200, rowIndex);
                     }
                 }
@@ -264,6 +246,7 @@ async function fillRow(event, rowIndex) {
     }
 }
 
+// sends the input word to the server for checking
 async function checkAnswer(event, rowIndex) {
     if (!window[`isRow${rowIndex}Filled`]) {
         message.innerHTML = "Not enough letter";
@@ -286,14 +269,32 @@ async function checkAnswer(event, rowIndex) {
             const response = await axios.post('/checkAnswer', { word });
             const resData = response.data;
 
-            for (const [key, value] of Object.entries(resData)) {
-                if (value === 0) {
-                    window[`cell${rowIndex}${key[1]}`].classList.add("incorrect");
-                } else if (value === 1) {
-                    window[`cell${rowIndex}${key[1]}`].classList.add("partial");
-                } else if (value === 2) {
-                    numsOfCorrect++;
-                    window[`cell${rowIndex}${key[1]}`].classList.add("correct");
+            let objectKeys = Object.keys(resData);
+            let objectValues = Object.values(resData);
+            for (let i = 0; i < Object.keys(resData).length; i++) {
+                for (let j = 0; j < keyboardButtons.length; j++) {
+                    let keyboardKey = null;
+                    if (keyboardButtons[j].value.toLowerCase() === word[i]) {
+                        keyboardKey = keyboardButtons[j];
+                    }
+
+                    let key = objectKeys[i];
+                    let value = objectValues[i];
+
+                    if (value === 0 && keyboardKey !== null) {
+                        window[`cell${rowIndex}${key[1]}`].classList.add("incorrect");
+                        keyboardKey.className = "";
+                        keyboardKey.classList.add("incorrect");
+                    } else if (value === 1 && keyboardKey !== null) {
+                        window[`cell${rowIndex}${key[1]}`].classList.add("partial");
+                        keyboardKey.className = "";
+                        keyboardKey.classList.add("partial");
+                    } else if (value === 2 && keyboardKey !== null) {
+                        numsOfCorrect++;
+                        window[`cell${rowIndex}${key[1]}`].classList.add("correct");
+                        keyboardKey.className = "";
+                        keyboardKey.classList.add("correct");
+                    }
                 }
             }
 
@@ -311,6 +312,7 @@ async function checkAnswer(event, rowIndex) {
     }
 }
 
+// function for guessing the correct word
 function win(currRowIndex) {
     for (let i = currRowIndex; i < 6; i++) {
         window[`cell${i}0`].readOnly = true;
@@ -325,6 +327,7 @@ function win(currRowIndex) {
     openModal();
 }
 
+// function for guessing the word incorrectly
 function lose(currRowIndex) {
     for (let i = currRowIndex; i < 6; i++) {
         window[`cell${i}0`].readOnly = true;
@@ -339,6 +342,7 @@ function lose(currRowIndex) {
     openModal();
 }
 
+// makes current row read-only and next row ready
 function getNextRowReady(currRowIndex, nextRowIndex) {
     if (currRowIndex === 5) {
         for (i = 0; i < 5; i++) {
@@ -352,10 +356,12 @@ function getNextRowReady(currRowIndex, nextRowIndex) {
     }
 }
 
+// check which key is typed in
 function checkKey(key) {
     return key !== "Space" && ((key.substring(0, 3) === "Key") || key === "Backspace" || key === "Enter");
 }
 
+// creates a string of emojis for game result
 function createResults(rowIndex) {
     for (let i = 0; i < 5; i++) {
         if (window[`cell${rowIndex}${i}`].classList.contains("correct")) {
@@ -369,6 +375,7 @@ function createResults(rowIndex) {
     results += "\n";
 }
 
+// copies the game result to the clipboard
 function shareResults() {
     navigator.clipboard.writeText(results)
         .then(() => {
@@ -395,6 +402,7 @@ function outsideClick(e) {
     }
 }
 
+// counter till midnight for new word
 function timeToNextHurdle() {
     setInterval(function () {
         let today = new Date();
@@ -417,4 +425,20 @@ function timeToNextHurdle() {
 
         timer.innerHTML = time;
     }, 1000);
+}
+
+function formateDate(d) {
+    let month = String(d.getMonth() + 1);
+    let day = String(d.getDate());
+    let year = String(d.getFullYear());
+
+    if (month.length < 2) {
+        month = '0' + month;   
+    }
+
+    if (day.length < 2) {
+        day = '0' + day;   
+    }
+
+    return `${day}/${month}/${year}`;
 }
