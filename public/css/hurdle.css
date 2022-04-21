@@ -38,7 +38,12 @@ hr {
 }
 
 #content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     padding-top: 3%;
+    height: 100%;
     width: 100%;
     text-align: center;
 }
@@ -73,6 +78,7 @@ hr {
 
 #grid {
     padding-top: 20px;
+    width: 100%;
 }
 
 .row {
@@ -93,11 +99,6 @@ hr {
     text-transform: uppercase;
     font-weight: 600;
     caret-color: transparent;
-}
-
-footer {
-    margin-top: auto;
-    padding-bottom: 1%;
 }
 
 .row input:focus {
@@ -201,6 +202,38 @@ footer {
     100% {
         transform: translateX(0);
     }
+}
+
+#keyboard-container {
+    width: 100%;
+    margin-top: auto;
+    padding-bottom: 1%;
+}
+
+.keyboard-row {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.keyboard-row button {
+    font-size: medium;
+    width: 43px;
+    height: 58px;
+    background-color: rgb(118, 120, 121);
+    border: 1px rgb(118, 120, 121) solid;
+    border-radius: 4px;
+    color: white;
+    font-weight: 600;
+    margin-right: 2px;
+}
+
+.keyboard-row button:hover {
+    cursor: pointer;
+}
+
+.keyboard-row .wide-buttons {
+    width: 65px;
+    height: 58px;
 }
 
 #modal {
@@ -308,4 +341,9 @@ footer {
     to {
         opacity: 1;
     }
+}
+
+footer {
+    margin-top: auto;
+    padding-bottom: 1%;
 }

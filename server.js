@@ -27,7 +27,7 @@ let job = schedule.scheduleJob('0 0 * * *', () => {
 });
 
 app.get('/', (req, res) => {
-    console.log(todaysWord);
+    // console.log(todaysWord);
     res.sendFile(path.join(__dirname + '/public/views/hurdle.html'));
 });
 app.post('/checkAnswer', (req, res) => {

@@ -43,6 +43,55 @@ const cell52 = document.querySelector('#cell52');
 const cell53 = document.querySelector('#cell53');
 const cell54 = document.querySelector('#cell54');
 
+const keyboardButtons = document.querySelectorAll('.keyboard-row button');
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    for (let i = 0; i < keyboardButtons.length; i++) {
+        keyboardButtons[i].onclick = ({ target }) => {
+            const key = target.value;
+
+            if (key === "Enter") {
+                let event = new KeyboardEvent("keydown", {
+                    bubbles: true,
+                    cancelBubble: false,
+                    cancelable: true,
+                    code: "Enter",
+                    composed: true,
+                    isComposing: false,
+                    isTrusted: true,
+                    repeat: false
+                });
+                window.dispatchEvent(event);
+            } else if (key === "Backspace") {
+                let event = new KeyboardEvent("keydown", {
+                    bubbles: true,
+                    cancelBubble: false,
+                    cancelable: true,
+                    code: "Backspace",
+                    composed: true,
+                    isComposing: false,
+                    isTrusted: true,
+                    repeat: false
+                });
+                window.dispatchEvent(event);
+            } else {
+                let event = new KeyboardEvent("keydown", {
+                    bubbles: true,
+                    cancelBubble: false,
+                    cancelable: true,
+                    code: `Key${key}`,
+                    composed: true,
+                    isComposing: false,
+                    isTrusted: true,
+                    repeat: false
+                });
+                window.dispatchEvent(event);
+            }
+        }
+    }
+});
+
 const modal = document.querySelector('#modal');
 const closeBtn = document.querySelector('#close');
 const shareButton = document.querySelector('#share-button');
@@ -63,38 +112,48 @@ window["isRow3Filled"] = false;
 window["isRow4Filled"] = false;
 window["isRow5Filled"] = false;
 
-let hasWon = false;
+let hasGameEnded = false;
+
 let numOfTries = 0;
 let results = 'Hurdle! by Sunny\n\n';
 
-window.addEventListener('keydown', function (event) {
-    if (checkKey(event.code)) {
-        if (!isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
-            fillRow(event, 0);
-        } else if (isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
-            fillRow(event, 1);
-        } else if (isRow0Filled && isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
-            fillRow(event, 2);
-        } else if (isRow0Filled && isRow1Filled && isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
-            fillRow(event, 3);
-        } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && !isRow4Filled && !isRow5Filled) {
-            fillRow(event, 4);
-        } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && isRow4Filled && !isRow5Filled) {
-            fillRow(event, 5);
+
+if (hasGameEnded === false) {
+    window.addEventListener('keydown', function (event) {
+        if (checkKey(event.code)) {
+            if (!isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
+                fillRow(event, 0);
+            } else if (isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
+                fillRow(event, 1);
+            } else if (isRow0Filled && isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
+                fillRow(event, 2);
+            } else if (isRow0Filled && isRow1Filled && isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
+                fillRow(event, 3);
+            } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && !isRow4Filled && !isRow5Filled) {
+                fillRow(event, 4);
+            } else if (isRow0Filled && isRow1Filled && isRow2Filled && isRow3Filled && isRow4Filled && !isRow5Filled) {
+                fillRow(event, 5);
+            }
         }
-    }
-});
+    });
+} else if (hasGameEnded === true) {
+    window.addEventListener('keydown', function (event) {
+        event.preventDefault();
+    });
+}
 
 async function fillRow(event, rowIndex) {
     switch (counter) {
         case 0: {
             if (event.code === "Backspace") {
                 window[`cell${rowIndex}0`].focus();
+                window[`cell${rowIndex}0`].value = "";
                 counter = 0;
             } else if (event.code === "Enter") {
                 await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}0`].focus();
+                window[`cell${rowIndex}0`].value = event.code.charAt(3);
                 counter += 1;
             }
             break;
@@ -103,11 +162,13 @@ async function fillRow(event, rowIndex) {
         case 1: {
             if (event.code === "Backspace") {
                 window[`cell${rowIndex}0`].focus();
+                window[`cell${rowIndex}0`].value = "";
                 counter -= 1;
             } else if (event.code === "Enter") {
                 await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}1`].focus();
+                window[`cell${rowIndex}1`].value = event.code.charAt(3);
                 counter += 1;
             }
             break;
@@ -116,11 +177,13 @@ async function fillRow(event, rowIndex) {
         case 2: {
             if (event.code === "Backspace") {
                 window[`cell${rowIndex}1`].focus();
+                window[`cell${rowIndex}1`].value = "";
                 counter -= 1;
             } else if (event.code === "Enter") {
                 await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}2`].focus();
+                window[`cell${rowIndex}2`].value = event.code.charAt(3);
                 counter += 1;
             }
             break;
@@ -129,11 +192,13 @@ async function fillRow(event, rowIndex) {
         case 3: {
             if (event.code === "Backspace") {
                 window[`cell${rowIndex}2`].focus();
+                window[`cell${rowIndex}2`].value = "";
                 counter -= 1;
             } else if (event.code === "Enter") {
                 await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}3`].focus();
+                window[`cell${rowIndex}3`].value = event.code.charAt(3);
                 counter += 1;
             }
             break;
@@ -142,11 +207,13 @@ async function fillRow(event, rowIndex) {
         case 4: {
             if (event.code === "Backspace") {
                 window[`cell${rowIndex}3`].focus();
+                window[`cell${rowIndex}3`].value = "";
                 counter -= 1;
             } else if (event.code === "Enter") {
                 await checkAnswer(event, rowIndex);
             } else {
                 window[`cell${rowIndex}4`].focus();
+                window[`cell${rowIndex}4`].value = event.code.charAt(3);
                 counter += 1;
             }
             break;
@@ -155,6 +222,7 @@ async function fillRow(event, rowIndex) {
         case 5: {
             if (event.code === "Backspace") {
                 window[`cell${rowIndex}4`].focus();
+                window[`cell${rowIndex}4`].value = "";
                 counter -= 1;
             } else {
                 if (event.code === "Enter") {
@@ -182,7 +250,7 @@ async function fillRow(event, rowIndex) {
                         if (numOfTries === 6) {
                             createResults(rowIndex);
                             results = results.slice(0, 16) + `${numOfTries}/6\n` + results.slice(16);
-                            setTimeout(lose, 1200);
+                            setTimeout(lose, 1200, rowIndex);
                         } else {
                             window[`isRow${rowIndex}Filled`] = true;
                             createResults(rowIndex);
@@ -210,11 +278,11 @@ async function checkAnswer(event, rowIndex) {
             message.innerHTML = "";
         }, 2050);
     } else {
-        window[`cell${rowIndex}0Value`] = window[`cell${rowIndex}0`].value;
-        window[`cell${rowIndex}1Value`] = window[`cell${rowIndex}1`].value;
-        window[`cell${rowIndex}2Value`] = window[`cell${rowIndex}2`].value;
-        window[`cell${rowIndex}3Value`] = window[`cell${rowIndex}3`].value;
-        window[`cell${rowIndex}4Value`] = window[`cell${rowIndex}4`].value;
+        window[`cell${rowIndex}0Value`] = window[`cell${rowIndex}0`].value.toLowerCase();
+        window[`cell${rowIndex}1Value`] = window[`cell${rowIndex}1`].value.toLowerCase();
+        window[`cell${rowIndex}2Value`] = window[`cell${rowIndex}2`].value.toLowerCase();
+        window[`cell${rowIndex}3Value`] = window[`cell${rowIndex}3`].value.toLowerCase();
+        window[`cell${rowIndex}4Value`] = window[`cell${rowIndex}4`].value.toLowerCase();
 
         numsOfCorrect = 0;
         const word = `${window[`cell${rowIndex}0Value`]}${window[`cell${rowIndex}1Value`]}${window[`cell${rowIndex}2Value`]}${window[`cell${rowIndex}3Value`]}${window[`cell${rowIndex}4Value`]}`;
@@ -257,12 +325,21 @@ function win(currRowIndex) {
         window[`cell${i}4`].readOnly = true;
         window[`cell${i}4`].blur();
     }
-    hasWon = true;
+    hasGameEnded = true;
     modalBodyText.innerHTML = "Congratulations! You have cracked today's word. Come back tomorrow for the next.";
     openModal();
 }
 
-function lose() {
+function lose(currRowIndex) {
+    for (let i = currRowIndex; i < 6; i++) {
+        window[`cell${i}0`].readOnly = true;
+        window[`cell${i}1`].readOnly = true;
+        window[`cell${i}2`].readOnly = true;
+        window[`cell${i}3`].readOnly = true;
+        window[`cell${i}4`].readOnly = true;
+        window[`cell${i}4`].blur();
+    }
+    hasGameEnded = true;
     modalBodyText.innerHTML = "Uh-oh! Come back tomorrow to try again.";
     openModal();
 }
