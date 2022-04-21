@@ -45,7 +45,6 @@ const cell54 = document.querySelector('#cell54');
 
 const keyboardButtons = document.querySelectorAll('.keyboard-row button');
 
-
 document.addEventListener("DOMContentLoaded", function () {
     for (let i = 0; i < keyboardButtons.length; i++) {
         keyboardButtons[i].onclick = ({ target }) => {
@@ -113,13 +112,11 @@ window["isRow4Filled"] = false;
 window["isRow5Filled"] = false;
 
 let hasGameEnded = false;
-
 let numOfTries = 0;
 let results = 'Hurdle! by Sunny\n\n';
 
-
-if (hasGameEnded === false) {
-    window.addEventListener('keydown', function (event) {
+window.addEventListener('keydown', function (event) {
+    if (hasGameEnded === false) {
         if (checkKey(event.code)) {
             if (!isRow0Filled && !isRow1Filled && !isRow2Filled && !isRow3Filled && !isRow4Filled && !isRow5Filled) {
                 fillRow(event, 0);
@@ -135,12 +132,10 @@ if (hasGameEnded === false) {
                 fillRow(event, 5);
             }
         }
-    });
-} else if (hasGameEnded === true) {
-    window.addEventListener('keydown', function (event) {
+    } else {
         event.preventDefault();
-    });
-}
+    }
+});
 
 async function fillRow(event, rowIndex) {
     switch (counter) {
