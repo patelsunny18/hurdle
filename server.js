@@ -27,7 +27,7 @@ let job = schedule.scheduleJob('0 0 * * *', () => {
     todaysWord = generateWord();
 });
 
-app.get('/', (req, res) => {
+app.get('/hurdle', (req, res) => {
     res.sendFile(path.join(__dirname + '/public/views/hurdle.html'));
 });
 
